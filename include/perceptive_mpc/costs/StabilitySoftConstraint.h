@@ -84,10 +84,13 @@ class StabilitySoftConstraint : public ocs2::RelaxedBarrierCost<Definitions::STA
 
   StabilitySoftConstraint* clone() const override;
 
+ //If the Zero Moment Point remains in the support polygon of the robot, it is  guranteed to be mechanically stable
   template <typename SCALAR_T>
   inline SCALAR_T computeCOMConstraintValue(const Eigen::Matrix<SCALAR_T, -1, 1>& state) const {
     using vector3_ad_t = Eigen::Matrix<SCALAR_T, 3, 1>;
+   //Center of Mass of the base frame 
     vector3_ad_t com = settings_.kinematics->getCOMBaseFrame(state);
+   //inscribe the circle into the support polygon to make sure the zmp stays within the constraint
     return settings_.supportCircleRadius * settings_.supportCircleRadius - com[0] * com[0] - com[1] * com[1];
   };
 
